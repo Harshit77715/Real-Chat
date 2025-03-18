@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f4;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+        }
+        .container {
+            background: white;
+            padding: 20px;
+            box-shadow: 0px 0px 10px rgba(0,0,0,0.1);
+            border-radius: 8px;
+            width: 300px;
+        }
+        h2 {
+            text-align: center;
+        }
+        input, button {
+            width: 100%;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #0056b3;
+        }
+        .message {
+            margin-top: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Login</h2>
+        <form id="loginForm">
+            <input type="email" id="email" placeholder="Email" required>
+            <input type="password" id="password" placeholder="Password" required minlength="8">
+            <button type="submit">Login</button>
+        </form>
+        <p class="message" id="message"></p>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch("http://localhost:3000/api/auth/login", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ email, password }),
+                credentials: "include" // Ensures cookies (JWT) are stored
+            });
+
+            const result = await response.json();
+            const messageBox = document.getElementById('message');
+
+            if (response.ok) {
+                alert("Login Successful! Redirecting to the dashboard...");
+                setTimeout(() => {
+                    window.location.href = "dashboard.html"; // Redirect after login
+                }, 2000);
+            } else {
+                messageBox.style.color = "red";
+                messageBox.textContent = `${result.message || "Error Logging In"}`;
+            }
+        });
+    </script>
+</body>
+</html>
